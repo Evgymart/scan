@@ -13,5 +13,5 @@ COPY --from=builder /etc/group /etc/group
 COPY --from=builder /app/main /main
 
 USER 65532:65532
-EXPOSE 8080
+EXPOSE 80
 ENTRYPOINT ["/main"]
