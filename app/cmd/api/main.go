@@ -20,7 +20,7 @@ func main() {
 	}
 
 	log.Printf("Starting server on port %s", cfg.ServerPort)
-	h := handlers.NewHandlers()
+	h := handlers.NewHandlers(cfg)
 	mux := router.New(h)
 	serverAddr := ":" + cfg.ServerPort
 

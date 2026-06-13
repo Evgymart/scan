@@ -7,7 +7,7 @@ RUN addgroup -g 65532 nonroot && \
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o main ./cmd/api
 
-FROM scratch
+FROM alpine
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /app/main /main
