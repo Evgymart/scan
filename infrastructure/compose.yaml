@@ -1,0 +1,9 @@
+services:
+  app:
+    build:
+      context: ../app
+      dockerfile: ../infrastructure/docker/go/Dockerfile
+    container_name: scan-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
