@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virus Scan</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <main class="container">
+        <div class="card">
+            <h1>Send your files for virus scan</h1>
+            <p class="subtitle">Upload files to scan for potential threats</p>
+
+            <form id="upload-form" class="upload-form">
+                <div class="file-drop-area" id="drop-area">
+                    <input type="file" id="file-input" name="files" multiple class="file-input" hidden>
+                    <div class="drop-area-content">
+                        <img class="upload-icon" src="/static/icons/upload-icon.svg" alt="Upload" width="48" height="48">
+                        <p class="drop-text">Drag and drop files here or <span class="browse-link">browse</span></p>
+                        <p class="drop-hint">Multiple files allowed</p>
+                    </div>
+                </div>
+
+                <div id="file-list" class="file-list" hidden></div>
+
+                <div id="result-message" class="result-message" hidden></div>
+
+                <button type="submit" id="submit-btn" class="submit-btn" disabled>Scan Files</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -13,7 +13,6 @@ func New(h *handlers.Handlers) http.Handler {
 			methodNotAllowed(w)
 			return
 		}
-
 		h.Index(w, r)
 	})
 
@@ -22,8 +21,15 @@ func New(h *handlers.Handlers) http.Handler {
 			methodNotAllowed(w)
 			return
 		}
-
 		h.Scan(w, r)
+	})
+
+	mux.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			methodNotAllowed(w)
+			return
+		}
+		h.ServeStatic(w, r)
 	})
 
 	return mux
