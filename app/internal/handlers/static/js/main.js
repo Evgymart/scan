@@ -87,7 +87,10 @@
       resultMessage.className =
         "result-message " + (response.ok ? "success" : "error");
       resultMessage.textContent = response.ok
-        ? "Scan complete. Total size: " + formatFileSize(data.size) + "."
+        ? "Scan started. Total size: " +
+          formatFileSize(data.size) +
+          ", id: " +
+          data.id
         : "Error: " + data.error;
       resultMessage.hidden = false;
 

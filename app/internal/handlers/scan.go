@@ -3,6 +3,8 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 func (h *Handlers) Scan(w http.ResponseWriter, r *http.Request) {
@@ -27,5 +29,11 @@ func (h *Handlers) Scan(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJson(w, http.StatusOK, map[string]any{"status": "ok", "size": totalSize})
+	id, err := uuid.NewV7()
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	respondWithJson(w, http.StatusOK, map[string]any{"status": "ok", "size": totalSize, "id": id})
 }
