@@ -3,6 +3,7 @@ package handlers
 import (
 	"embed"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"path/filepath"
 	"scan/internal/config"
@@ -42,6 +43,19 @@ func respondWithJson(w http.ResponseWriter, statusCode int, payload any) {
 
 func respondWithError(w http.ResponseWriter, statusCode int, err error) {
 	respondWithJson(w, statusCode, map[string]string{"error": err.Error()})
+}
+
+func formatBytes(bytes int64) string {
+	const unit = 1024
+	if bytes < unit {
+		return fmt.Sprintf("%d B", bytes)
+	}
+	div, exp := int64(unit), 0
+	for n := bytes / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %ciB", float64(bytes)/float64(div), "KMGTPE"[exp])
 }
 
 func (h *Handlers) ServeStatic(w http.ResponseWriter, r *http.Request) {
