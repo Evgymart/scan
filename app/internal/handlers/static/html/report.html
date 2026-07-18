@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Scan Report</title>
+        <link rel="stylesheet" href="/static/css/styles.css" />
+        <link rel="stylesheet" href="/static/css/report.css" />
+    </head>
+    <body>
+        <main class="container">
+            <div class="card">
+                <h1>Scan Report</h1>
+                <p class="subtitle">View scan results and details</p>
+
+                <div class="info-section">
+                    <div class="info-row">
+                        <span class="info-label">ID</span>
+                        <span class="info-value">{{.UUID}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Status</span>
+                        <span class="info-value {{.StatusClass}}">{{.Status}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Started</span>
+                        <span class="info-value">{{.StartFormatted}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Duration</span>
+                        <span class="info-value">{{.DurationFormatted}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Files scanned</span>
+                        <span class="info-value">{{.FileCount}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Infected files</span>
+                        <span class="info-value">{{.InfectedCount}}</span>
+                    </div>
+                </div>
+
+                <div class="files-section">
+                    <p class="files-title">Files</p>
+                    {{range .Files}}
+                    <div class="file-row">
+                        <span class="file-name">{{.Filename}}</span>
+                        <span class="file-size">{{.SizeFormatted}}</span>
+                        <span class="{{if .Infected}}file-infected{{else}}file-clean{{end}}">{{if .Infected}}Infected{{else}}Clean{{end}}</span>
+                    </div>
+                    {{end}}
+                </div>
+
+                {{if .HasViruses}}
+                <div class="viruses-section">
+                    <p class="files-title">Threats detected</p>
+                    {{range .Viruses}}
+                    <div class="virus-item">
+                        <span class="virus-name">{{.Name}}</span> in {{.Filename}}
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+
+                {{if .Error}}
+                <div class="result-message error" style="margin-top: 1rem;">
+                    {{.Error}}
+                </div>
+                {{end}}
+            </div>
+        </main>
+    </body>
+</html>

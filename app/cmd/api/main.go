@@ -9,6 +9,7 @@ import (
 	"scan/internal/config"
 	"scan/internal/handlers"
 	"scan/internal/router"
+	"scan/internal/storage"
 	"syscall"
 	"time"
 )
@@ -19,8 +20,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	db, err := storage.Open(cfg.BadgerDBPath)
+	if err != nil {
+		log.Fatalf("Failed to open database: %v", err)
+	}
+
 	log.Printf("Starting server on port %s", cfg.ServerPort)
-	h := handlers.NewHandlers(cfg)
+	h := handlers.NewHandlers(cfg, db)
 	mux := router.New(h)
 	serverAddr := ":" + cfg.ServerPort
 
@@ -52,6 +58,13 @@ func main() {
 	}
 
 	shutdownTimeout := 30 * time.Second
+	log.Println("server: shutting down...")
+
+	log.Println("server: closing database...")
+	if err := db.Close(); err != nil {
+		log.Printf("server: database close error: %v", err)
+	}
+
 	log.Println("server: shutting down HTTP server...")
 	ctx, cancel := context.WithTimeout(shutdownCtx, shutdownTimeout)
 	defer cancel()

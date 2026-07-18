@@ -8,9 +8,12 @@ import (
 
 const defaultMaxUploadSize = 100 << 20 // 100MB
 
+const defaultBadgerPath = "./data/badger"
+
 type Config struct {
 	ServerPort    string
 	MaxUploadSize int64
+	BadgerDBPath  string
 }
 
 func Load() (*Config, error) {
@@ -26,8 +29,14 @@ func Load() (*Config, error) {
 		}
 	}
 
+	badgerDBPath := defaultBadgerPath
+	if val := os.Getenv("BADGER_DB_PATH"); val != "" {
+		badgerDBPath = val
+	}
+
 	return &Config{
 		ServerPort:    serverPort,
 		MaxUploadSize: maxUploadSize,
+		BadgerDBPath:  badgerDBPath,
 	}, nil
 }

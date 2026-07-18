@@ -86,12 +86,13 @@
 
       resultMessage.className =
         "result-message " + (response.ok ? "success" : "error");
-      resultMessage.textContent = response.ok
-        ? "Scan started. Total size: " +
-          formatFileSize(data.size) +
-          ", id: " +
-          data.id
-        : "Error: " + data.error;
+      if (response.ok) {
+        const reportUrl = window.location.origin + "/report/" + data.id;
+        resultMessage.innerHTML =
+          'Report available <a href="' + reportUrl + '" class="report-link" target="_blank">here</a>';
+      } else {
+        resultMessage.textContent = "Error: " + data.error;
+      }
       resultMessage.hidden = false;
 
       if (response.ok) {

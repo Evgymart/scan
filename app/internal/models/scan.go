@@ -33,3 +33,13 @@ type Virus struct {
 	Filename string `json:"filename"`
 	Name     string `json:"name"`
 }
+
+func NewScan(uuid string) *Scan {
+	return &Scan{
+		UUID:     uuid,
+		Start:    time.Now(),
+		Status:   StatusPending,
+		Files:    []File{},
+		Infected: 0,
+	}
+}

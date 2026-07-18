@@ -7,18 +7,20 @@ import (
 	"net/http"
 	"path/filepath"
 	"scan/internal/config"
+	"scan/internal/storage"
 	"strings"
 )
 
-//go:embed static/*/*.html static/*/*.css static/*/*.js
+//go:embed static/*/*.html static/*/*.css static/*/*.js static/*/*.svg
 var staticFS embed.FS
 
 type Handlers struct {
 	cfg *config.Config
+	DB  *storage.DB
 }
 
-func NewHandlers(cfg *config.Config) *Handlers {
-	return &Handlers{cfg: cfg}
+func NewHandlers(cfg *config.Config, db *storage.DB) *Handlers {
+	return &Handlers{cfg: cfg, DB: db}
 }
 
 func respondWithHtml(w http.ResponseWriter, statusCode int, path string) {
@@ -75,6 +77,8 @@ func (h *Handlers) ServeStatic(w http.ResponseWriter, r *http.Request) {
 		contentType = "text/css; charset=utf-8"
 	case ".js":
 		contentType = "application/javascript; charset=utf-8"
+	case ".svg":
+		contentType = "image/svg+xml"
 	default:
 		http.Error(w, "Unsupported file type", http.StatusNotFound)
 		return

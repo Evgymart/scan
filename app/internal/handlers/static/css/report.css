@@ -1,0 +1,64 @@
+.status-pending { color: #b45309; }
+.status-scanning { color: #0284c7; }
+.status-done { color: #16a34a; }
+.status-failed { color: #dc2626; }
+
+.info-section {
+    margin-bottom: 1.5rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label { color: #666; }
+.info-value { font-weight: 500; }
+
+.files-section {
+    margin-top: 1.5rem;
+}
+
+.files-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.file-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: #f5f5f5;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.file-name { flex: 1; }
+.file-size { color: #666; margin-right: 1rem; }
+.file-infected { color: #dc2626; }
+.file-clean { color: #16a34a; }
+
+.viruses-section {
+    margin-top: 1rem;
+}
+
+.virus-item {
+    padding: 0.5rem 0.75rem;
+    background: #fef2f2;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.virus-name {
+    font-weight: 500;
+    color: #991b1b;
+}
