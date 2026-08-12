@@ -11,3 +11,38 @@ services:
       - .env
     environment:
       - SERVER_PORT=${SERVER_PORT}
+      - CLAMAV_HOST=clamav
+      - CLAMAV_PORT=3310
+    volumes:
+      - scan_files:/scan
+    networks:
+      - scan-network
+    depends_on:
+      clamav:
+        condition: service_healthy
+
+  clamav:
+    image: clamav/clamav:latest
+    container_name: scan-clamav
+    restart: unless-stopped
+    ports:
+      - "3310:3310"
+    volumes:
+      - clamav_data:/var/lib/clamav
+      - scan_files:/scan:ro
+    networks:
+      - scan-network
+    healthcheck:
+      test: ["CMD", "clamdscan", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  scan-network:
+    driver: bridge
+
+volumes:
+  clamav_data:
+  scan_files:

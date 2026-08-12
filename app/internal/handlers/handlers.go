@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"scan/internal/config"
 	"scan/internal/storage"
+	"scan/internal/worker"
 	"strings"
 )
 
@@ -15,12 +16,13 @@ import (
 var staticFS embed.FS
 
 type Handlers struct {
-	cfg *config.Config
-	DB  *storage.DB
+	cfg     *config.Config
+	DB      *storage.DB
+	scanner *worker.Scanner
 }
 
-func NewHandlers(cfg *config.Config, db *storage.DB) *Handlers {
-	return &Handlers{cfg: cfg, DB: db}
+func NewHandlers(cfg *config.Config, db *storage.DB, scanner *worker.Scanner) *Handlers {
+	return &Handlers{cfg: cfg, DB: db, scanner: scanner}
 }
 
 func respondWithHtml(w http.ResponseWriter, statusCode int, path string) {

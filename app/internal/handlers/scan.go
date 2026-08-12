@@ -3,11 +3,14 @@ package handlers
 import (
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 	"strings"
+	"time"
+
+	"scan/internal/models"
 
 	"github.com/google/uuid"
-	"scan/internal/models"
 )
 
 func (h *Handlers) Scan(w http.ResponseWriter, r *http.Request) {
@@ -39,11 +42,36 @@ func (h *Handlers) Scan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	scan := models.NewScan(id.String())
+	for _, fileHeader := range files {
+		file, err := fileHeader.Open()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, fmt.Errorf("failed to open file: %w", err))
+			return
+		}
+		defer file.Close()
+
+		data, err := io.ReadAll(file)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, fmt.Errorf("failed to read file: %w", err))
+			return
+		}
+
+		_, err = h.scanner.SaveUploadedFile(id.String(), fileHeader.Filename, data)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, fmt.Errorf("failed to save file: %w", err))
+			return
+		}
+	}
 
 	if err := h.DB.CreateScan(scan); err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Errorf("failed to create scan: %w", err))
 		return
 	}
+
+	go func() {
+		time.Sleep(100 * time.Millisecond)
+		h.scanner.ProcessScan(scan)
+	}()
 
 	respondWithJson(w, http.StatusOK, map[string]any{"status": "ok", "size": totalSize, "id": id})
 }

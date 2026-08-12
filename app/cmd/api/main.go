@@ -6,10 +6,12 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"scan/internal/clamav"
 	"scan/internal/config"
 	"scan/internal/handlers"
 	"scan/internal/router"
 	"scan/internal/storage"
+	"scan/internal/worker"
 	"syscall"
 	"time"
 )
@@ -25,8 +27,25 @@ func main() {
 		log.Fatalf("Failed to open database: %v", err)
 	}
 
+	clamavClient := clamav.NewClient(cfg.ClamAVHost, cfg.ClamAVPort)
+
+	log.Printf("Connecting to ClamAV at %s:%d", cfg.ClamAVHost, cfg.ClamAVPort)
+	if err := clamavClient.Ping(); err != nil {
+		log.Printf("Warning: Failed to connect to ClamAV: %v", err)
+		log.Printf("Scanning will be unavailable until ClamAV is reachable")
+	} else {
+		log.Printf("Successfully connected to ClamAV")
+	}
+
+	scanner := worker.NewScanner(db, clamavClient, cfg.ScanDir)
+
+	shutdownCtx := context.Background()
+
+	log.Printf("Starting background scanner worker...")
+	go scanner.Run(shutdownCtx, 30*time.Second)
+
 	log.Printf("Starting server on port %s", cfg.ServerPort)
-	h := handlers.NewHandlers(cfg, db)
+	h := handlers.NewHandlers(cfg, db, scanner)
 	mux := router.New(h)
 	serverAddr := ":" + cfg.ServerPort
 

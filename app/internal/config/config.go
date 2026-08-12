@@ -10,10 +10,19 @@ const defaultMaxUploadSize = 100 << 20 // 100MB
 
 const defaultBadgerPath = "./data/badger"
 
+const defaultScanDir = "./data/scan"
+
+const defaultClamAVHost = "clamav"
+
+const defaultClamAVPort = 3310
+
 type Config struct {
 	ServerPort    string
 	MaxUploadSize int64
 	BadgerDBPath  string
+	ScanDir       string
+	ClamAVHost    string
+	ClamAVPort    int
 }
 
 func Load() (*Config, error) {
@@ -34,9 +43,29 @@ func Load() (*Config, error) {
 		badgerDBPath = val
 	}
 
+	scanDir := defaultScanDir
+	if val := os.Getenv("SCAN_DIR"); val != "" {
+		scanDir = val
+	}
+
+	clamAVHost := defaultClamAVHost
+	if val := os.Getenv("CLAMAV_HOST"); val != "" {
+		clamAVHost = val
+	}
+
+	clamAVPort := defaultClamAVPort
+	if val := os.Getenv("CLAMAV_PORT"); val != "" {
+		if parsed, err := strconv.Atoi(val); err == nil {
+			clamAVPort = parsed
+		}
+	}
+
 	return &Config{
 		ServerPort:    serverPort,
 		MaxUploadSize: maxUploadSize,
 		BadgerDBPath:  badgerDBPath,
+		ScanDir:       scanDir,
+		ClamAVHost:    clamAVHost,
+		ClamAVPort:    clamAVPort,
 	}, nil
 }
